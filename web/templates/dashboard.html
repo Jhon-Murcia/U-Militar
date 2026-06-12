@@ -1,71 +1,171 @@
 {% extends 'base.html' %}
 
+{% block body_class %}dashboard-body{% endblock %}
+{% block topbar %}{% endblock %}
+
 {% block content %}
-<section class="page-hero">
-  <div>
-    <span class="mini-label">Dashboard principal</span>
-    <h1>Formularios aplicados en TestQreator</h1>
-    <p>Revisa los formularios activos, accede a sus resultados y entra al detalle de cada estudiante.</p>
-  </div>
-  <a class="primary-button" href="/dashboard?refresh=1">Sincronizar formularios</a>
-</section>
+{% set total_formularios = formularios|length %}
+{% set total_estudiantes = metricas.total_estudiantes|default(0) %}
+{% set promedio_creatividad = metricas.promedio_creatividad|default(0) %}
+{% set promedio_originalidad = metricas.promedio_originalidad|default(0) %}
+{% set promedio_curiosidad = metricas.promedio_curiosidad|default(0) %}
+{% set suma_promedios = promedio_creatividad + promedio_originalidad + promedio_curiosidad %}
+{% set creatividad_pct = (promedio_creatividad / suma_promedios * 100) if suma_promedios else 34 %}
+{% set originalidad_pct = (promedio_originalidad / suma_promedios * 100) if suma_promedios else 33 %}
+{% set curiosidad_pct = (promedio_curiosidad / suma_promedios * 100) if suma_promedios else 33 %}
+{% set max_estudiantes = formularios|map(attribute='total_estudiantes')|max|default(1, true) %}
 
-{% if error_404 %}
-<div class="alert alert-soft">No se encontró el recurso solicitado.</div>
-{% endif %}
-
-<section class="stats-grid">
-  <article class="stat-card">
-    <span>Estudiantes totales</span>
-    <strong>{{ metricas.total_estudiantes }}</strong>
-  </article>
-  <article class="stat-card">
-    <span>Creatividad promedio</span>
-    <strong>{{ metricas.promedio_creatividad }}</strong>
-  </article>
-  <article class="stat-card">
-    <span>Originalidad promedio</span>
-    <strong>{{ metricas.promedio_originalidad }}</strong>
-  </article>
-  <article class="stat-card">
-    <span>Curiosidad promedio</span>
-    <strong>{{ metricas.promedio_curiosidad }}</strong>
-  </article>
-</section>
-
-<section class="panel-card">
-  <div class="panel-header">
-    <div>
-      <span class="mini-label">Formularios detectados</span>
-      <h2>{{ formularios|length }} formularios aplicados</h2>
-    </div>
-    <p>Haz clic en cualquier tarjeta para revisar respuestas, perfiles y detalles.</p>
-  </div>
-
-  <div class="forms-grid">
-    {% for formulario in formularios %}
-    <a class="form-card" href="/formulario/{{ formulario.id }}">
-      <div class="form-card-top">
-        <div>
-          <span class="mini-label">Formulario</span>
-          <h3>{{ formulario.nombre }}</h3>
-        </div>
-        <span class="form-count">{{ formulario.total_estudiantes }} estudiantes</span>
-      </div>
-      <p>{{ formulario.worksheet_nombre }}</p>
-      <div class="form-metrics">
-        <span><strong>{{ formulario.promedio_creatividad }}</strong> Creatividad</span>
-        <span><strong>{{ formulario.promedio_originalidad }}</strong> Originalidad</span>
-        <span><strong>{{ formulario.promedio_curiosidad }}</strong> Curiosidad</span>
-      </div>
-      <div class="form-card-footer">
-        <span>Actualizado: {{ formulario.actualizado_en }}</span>
-        <span class="text-link">Abrir panel</span>
-      </div>
+<div class="dashboard-layout">
+  <aside class="dashboard-sidebar">
+    <a class="sidebar-brand" href="/dashboard">
+      <strong>TestQreator</strong>
+      <span>Sistema de Analisis Psicologico</span>
     </a>
-    {% else %}
-    <div class="empty-state">No hay formularios sincronizados todavía.</div>
-    {% endfor %}
-  </div>
-</section>
+
+    <nav class="sidebar-nav" aria-label="Navegacion principal">
+      <a class="active" href="/dashboard">
+        <span class="nav-icon">⌘</span>
+        Dashboard
+      </a>
+      <a href="/dashboard?refresh=1">
+        <span class="nav-icon">↻</span>
+        Sincronizar
+      </a>
+      {% if formularios %}
+      <a href="/formulario/{{ formularios[0].id }}">
+        <span class="nav-icon">□</span>
+        Formularios
+      </a>
+      {% else %}
+      <a href="/dashboard">
+        <span class="nav-icon">□</span>
+        Formularios
+      </a>
+      {% endif %}
+      <a href="/logout">
+        <span class="nav-icon">↦</span>
+        Cerrar sesion
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>Ingenieria de Sistemas</span>
+      <span>Universidad © 2026</span>
+    </div>
+  </aside>
+
+  <section class="dashboard-main">
+    <header class="dashboard-heading">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Resumen general del sistema de analisis de perfiles creativos</p>
+      </div>
+      <a class="dashboard-sync" href="/dashboard?refresh=1">Sincronizar</a>
+    </header>
+
+    {% if error_404 %}
+    <div class="alert alert-soft">No se encontro el recurso solicitado.</div>
+    {% endif %}
+
+    <section class="dashboard-stats" aria-label="Metricas principales">
+      <article class="dashboard-stat-card">
+        <div>
+          <span>Total Formularios</span>
+          <strong>{{ total_formularios }}</strong>
+          <small>{{ total_formularios }} activos</small>
+        </div>
+        <span class="stat-icon stat-green">□</span>
+      </article>
+      <article class="dashboard-stat-card">
+        <div>
+          <span>Estudiantes Evaluados</span>
+          <strong>{{ total_estudiantes }}</strong>
+          <small>Datos sincronizados</small>
+        </div>
+        <span class="stat-icon stat-blue">◎</span>
+      </article>
+      <article class="dashboard-stat-card">
+        <div>
+          <span>Creatividad Promedio</span>
+          <strong>{{ promedio_creatividad }}</strong>
+          <small>Dimension principal</small>
+        </div>
+        <span class="stat-icon stat-peach">◌</span>
+      </article>
+      <article class="dashboard-stat-card">
+        <div>
+          <span>Curiosidad Promedio</span>
+          <strong>{{ promedio_curiosidad }}</strong>
+          <small>Perfil exploratorio</small>
+        </div>
+        <span class="stat-icon stat-pink">◎</span>
+      </article>
+    </section>
+
+    <section class="dashboard-charts" aria-label="Graficos del dashboard">
+      <article class="chart-card">
+        <h2>Distribucion de Dimensiones Creativas</h2>
+        <div class="donut-wrap">
+          <div
+            class="donut-chart"
+            style="--creatividad: {{ creatividad_pct }}%; --originalidad: {{ creatividad_pct + originalidad_pct }}%;"
+            aria-label="Grafico circular de creatividad, originalidad y curiosidad"
+          >
+            <span>{{ suma_promedios|round(1) }}</span>
+          </div>
+          <ul class="chart-legend">
+            <li><span class="legend-dot green"></span>Creatividad: {{ promedio_creatividad }}</li>
+            <li><span class="legend-dot peach"></span>Originalidad: {{ promedio_originalidad }}</li>
+            <li><span class="legend-dot blue"></span>Curiosidad: {{ promedio_curiosidad }}</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Actividad por Formulario</h2>
+        <div class="bar-chart" aria-label="Grafico de estudiantes por formulario">
+          {% for formulario in formularios[:6] %}
+          {% set altura = (formulario.total_estudiantes / max_estudiantes * 100) if max_estudiantes else 0 %}
+          <div class="bar-item">
+            <div class="bar-track">
+              <span class="bar-fill" style="height: {{ altura }}%"></span>
+            </div>
+            <span class="bar-label">{{ formulario.nombre|truncate(12, true, '') }}</span>
+          </div>
+          {% else %}
+          <div class="empty-state">No hay datos suficientes para graficar.</div>
+          {% endfor %}
+        </div>
+      </article>
+    </section>
+
+    <section class="dashboard-list-card">
+      <div class="dashboard-list-header">
+        <div>
+          <h2>Formularios Aplicados</h2>
+          <p>Accede al detalle de respuestas, estudiantes y perfiles generados.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-form-list">
+        {% for formulario in formularios %}
+        <a class="dashboard-form-row" href="/formulario/{{ formulario.id }}">
+          <div>
+            <strong>{{ formulario.nombre }}</strong>
+            <span>{{ formulario.worksheet_nombre }}</span>
+          </div>
+          <div class="row-metrics">
+            <span>{{ formulario.total_estudiantes }} estudiantes</span>
+            <span>C {{ formulario.promedio_creatividad }}</span>
+            <span>O {{ formulario.promedio_originalidad }}</span>
+            <span>Q {{ formulario.promedio_curiosidad }}</span>
+          </div>
+        </a>
+        {% else %}
+        <div class="empty-state">No hay formularios sincronizados todavia.</div>
+        {% endfor %}
+      </div>
+    </section>
+  </section>
+</div>
 {% endblock %}

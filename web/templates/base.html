@@ -9,8 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
   <div class="page-backdrop"></div>
+  {% block topbar %}
   {% if usuario %}
   <header class="topbar topbar-shell">
     <a class="brand" href="/dashboard">
@@ -26,6 +27,7 @@
     </div>
   </header>
   {% endif %}
+  {% endblock %}
 
   <main class="app-shell {% if not usuario %}auth-shell{% endif %}">
     {% block content %}{% endblock %}
