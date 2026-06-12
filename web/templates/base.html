@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_title or 'TestQreator' }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="page-backdrop"></div>
+  {% if usuario %}
+  <header class="topbar topbar-shell">
+    <a class="brand" href="/dashboard">
+      <span class="brand-mark">T</span>
+      <span>
+        <strong>TestQreator</strong>
+        <small>Panel de análisis psicométrico</small>
+      </span>
+    </a>
+    <div class="topbar-actions">
+      <span class="user-chip">{{ usuario }}</span>
+      <a class="ghost-button" href="/logout">Cerrar sesión</a>
+    </div>
+  </header>
+  {% endif %}
+
+  <main class="app-shell {% if not usuario %}auth-shell{% endif %}">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

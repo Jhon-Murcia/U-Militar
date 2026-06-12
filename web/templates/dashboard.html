@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero">
+  <div>
+    <span class="mini-label">Dashboard principal</span>
+    <h1>Formularios aplicados en TestQreator</h1>
+    <p>Revisa los formularios activos, accede a sus resultados y entra al detalle de cada estudiante.</p>
+  </div>
+  <a class="primary-button" href="/dashboard?refresh=1">Sincronizar formularios</a>
+</section>
+
+{% if error_404 %}
+<div class="alert alert-soft">No se encontró el recurso solicitado.</div>
+{% endif %}
+
+<section class="stats-grid">
+  <article class="stat-card">
+    <span>Estudiantes totales</span>
+    <strong>{{ metricas.total_estudiantes }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Creatividad promedio</span>
+    <strong>{{ metricas.promedio_creatividad }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Originalidad promedio</span>
+    <strong>{{ metricas.promedio_originalidad }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Curiosidad promedio</span>
+    <strong>{{ metricas.promedio_curiosidad }}</strong>
+  </article>
+</section>
+
+<section class="panel-card">
+  <div class="panel-header">
+    <div>
+      <span class="mini-label">Formularios detectados</span>
+      <h2>{{ formularios|length }} formularios aplicados</h2>
+    </div>
+    <p>Haz clic en cualquier tarjeta para revisar respuestas, perfiles y detalles.</p>
+  </div>
+
+  <div class="forms-grid">
+    {% for formulario in formularios %}
+    <a class="form-card" href="/formulario/{{ formulario.id }}">
+      <div class="form-card-top">
+        <div>
+          <span class="mini-label">Formulario</span>
+          <h3>{{ formulario.nombre }}</h3>
+        </div>
+        <span class="form-count">{{ formulario.total_estudiantes }} estudiantes</span>
+      </div>
+      <p>{{ formulario.worksheet_nombre }}</p>
+      <div class="form-metrics">
+        <span><strong>{{ formulario.promedio_creatividad }}</strong> Creatividad</span>
+        <span><strong>{{ formulario.promedio_originalidad }}</strong> Originalidad</span>
+        <span><strong>{{ formulario.promedio_curiosidad }}</strong> Curiosidad</span>
+      </div>
+      <div class="form-card-footer">
+        <span>Actualizado: {{ formulario.actualizado_en }}</span>
+        <span class="text-link">Abrir panel</span>
+      </div>
+    </a>
+    {% else %}
+    <div class="empty-state">No hay formularios sincronizados todavía.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

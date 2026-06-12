@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero page-hero-compact">
+  <div>
+    <span class="mini-label">Detalle del estudiante</span>
+    <h1>{{ estudiante.nombre }}</h1>
+    <p>{{ estudiante.formulario_nombre }}</p>
+  </div>
+  <a class="primary-button secondary-button" href="{% if estudiante.formulario_id %}/formulario/{{ estudiante.formulario_id }}{% else %}/dashboard{% endif %}">Volver</a>
+</section>
+
+<section class="detail-grid">
+  <article class="panel-card">
+    <div class="panel-header">
+      <div>
+        <span class="mini-label">Información general</span>
+        <h2>Resumen del estudiante</h2>
+      </div>
+    </div>
+    <ul class="definition-list">
+      <li><span>ID</span><strong>{{ estudiante.id }}</strong></li>
+      <li><span>Formulario</span><strong>{{ estudiante.formulario_nombre }}</strong></li>
+      <li><span>Fecha de respuesta</span><strong>{{ estudiante.fecha_respuesta }}</strong></li>
+      <li><span>Correo</span><strong>{{ estudiante.correo }}</strong></li>
+      <li><span>Perfil principal</span><strong>{{ estudiante.perfil_principal }}</strong></li>
+      <li><span>Perfil secundario</span><strong>{{ estudiante.perfil_secundario }}</strong></li>
+      <li><span>Puntaje total</span><strong>{{ estudiante.puntaje_total }}</strong></li>
+    </ul>
+  </article>
+
+  <article class="panel-card panel-highlight">
+    <div class="panel-header">
+      <div>
+        <span class="mini-label">Descripción generada</span>
+        <h2>Lectura automática del perfil</h2>
+      </div>
+    </div>
+    <p class="description-block">{{ estudiante.descripcion }}</p>
+  </article>
+</section>
+
+<section class="detail-grid two-columns">
+  <article class="panel-card">
+    <div class="panel-header">
+      <div>
+        <span class="mini-label">Puntajes</span>
+        <h2>Dimensiones obtenidas</h2>
+      </div>
+    </div>
+    <div class="score-grid">
+      {% for dimension, valor in estudiante.puntajes.items() %}
+      <div class="score-item">
+        <span>{{ dimension }}</span>
+        <strong>{{ valor }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="panel-card">
+    <div class="panel-header">
+      <div>
+        <span class="mini-label">Respuestas</span>
+        <h2>Formulario completo</h2>
+      </div>
+    </div>
+    <div class="answers-list">
+      {% for respuesta in estudiante.respuestas %}
+      <div class="answer-item">
+        <strong>{{ respuesta.pregunta }}</strong>
+        <p>{{ respuesta.respuesta }}</p>
+      </div>
+      {% else %}
+      <p>No hay respuestas registradas.</p>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}

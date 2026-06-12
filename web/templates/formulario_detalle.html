@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero page-hero-compact">
+  <div>
+    <span class="mini-label">Formulario aplicado</span>
+    <h1>{{ formulario.nombre }}</h1>
+    <p>{{ formulario.worksheet_nombre }}</p>
+  </div>
+  <a class="primary-button secondary-button" href="/dashboard">Volver al panel</a>
+</section>
+
+<section class="stats-grid">
+  <article class="stat-card">
+    <span>Total estudiantes</span>
+    <strong>{{ metricas.total_estudiantes }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Creatividad promedio</span>
+    <strong>{{ metricas.promedio_creatividad }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Originalidad promedio</span>
+    <strong>{{ metricas.promedio_originalidad }}</strong>
+  </article>
+  <article class="stat-card">
+    <span>Curiosidad promedio</span>
+    <strong>{{ metricas.promedio_curiosidad }}</strong>
+  </article>
+</section>
+
+<section class="panel-card filter-panel">
+  <form method="get" class="filter-form">
+    <div class="field">
+      <label for="q">Buscar estudiante</label>
+      <input id="q" name="q" type="text" value="{{ busqueda }}" placeholder="Nombre o correo">
+    </div>
+    <div class="field">
+      <label for="perfil">Perfil</label>
+      <select id="perfil" name="perfil">
+        <option value="">Todos</option>
+        {% for perfil in perfiles %}
+        <option value="{{ perfil }}" {% if perfil == perfil_seleccionado %}selected{% endif %}>{{ perfil }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button class="primary-button" type="submit">Aplicar</button>
+  </form>
+</section>
+
+<section class="panel-card table-panel">
+  <div class="panel-header">
+    <div>
+      <span class="mini-label">Estudiantes del formulario</span>
+      <h2>{{ estudiantes|length }} registros visibles</h2>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Perfil principal</th>
+          <th>Perfil secundario</th>
+          <th>Puntaje total</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for estudiante in estudiantes %}
+        <tr>
+          <td>
+            <div class="table-person">
+              <strong>{{ estudiante.nombre }}</strong>
+              <span>{{ estudiante.correo }}</span>
+            </div>
+          </td>
+          <td>{{ estudiante.fecha_respuesta }}</td>
+          <td><span class="badge badge-soft">{{ estudiante.perfil_principal }}</span></td>
+          <td><span class="badge">{{ estudiante.perfil_secundario }}</span></td>
+          <td><strong>{{ estudiante.puntaje_total }}</strong></td>
+          <td><a class="text-link" href="/estudiante/{{ estudiante.id }}">Ver detalle</a></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="empty-state">No hay estudiantes para mostrar.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

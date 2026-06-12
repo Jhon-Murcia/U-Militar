@@ -1,8 +1,3 @@
-# config.py
+"""Compatibilidad con la configuración del paquete project."""
 
-ARCHIVO_CREDENCIALES = "credenciales.json"
-
-SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
+from project.config import *  # noqa: F401,F403

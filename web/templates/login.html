@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_title or 'TestQreator' }} | Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+  <div class="page-backdrop"></div>
+  <main class="auth-layout auth-layout-centered">
+    <section class="auth-hero">
+      <div class="auth-hero-badge">TestQreator</div>
+      <h1>Bienvenido al panel de análisis de formularios</h1>
+      <p>
+        Un espacio profesional para revisar respuestas, detectar perfiles predominantes y explorar
+        cada formulario aplicado con una vista clara, elegante y altamente visual.
+      </p>
+      <div class="auth-hero-pills">
+        <span>Login exclusivo</span>
+        <span>Sin registro público</span>
+        <span>Panel privado</span>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <div class="auth-card-header">
+        <span class="mini-label">Acceso administrativo</span>
+        <h2>Iniciar sesión</h2>
+        <p>Solo el usuario autorizado puede ingresar.</p>
+      </div>
+
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" class="login-form">
+        <label>
+          <span>Usuario</span>
+          <input type="email" name="usuario" placeholder="Ingresa tu correo" required>
+        </label>
+        <label>
+          <span>Contraseña</span>
+          <input type="password" name="contrasena" placeholder="••••••••••••" required>
+        </label>
+        <button type="submit" class="primary-button">Entrar al dashboard</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
